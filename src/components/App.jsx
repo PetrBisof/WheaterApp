@@ -1,7 +1,15 @@
-
+var Skycons = require('react-skycons');
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import WheaterCard from './WheaterCard.jsx'
+import { WiDaySunny } from "weather-icons-react";
+
+
+/* import reactstrap from 'reactstrap'; */
+import WheaterCard from './WheaterCard.jsx';
+import ReactAnimatedWeather from 'react-animated-weather';
+/* import './../weather-icons.css'; */
+
+/* import Skycons from 'react-skycons' */
 
 
 
@@ -9,7 +17,12 @@ const App = props => {
 
 const [wheaterCurrentData, setWheaterCurrentData] = useState([]);
 
+const [wheaterTomorrowData, setWheaterTomorrowData] = useState([]);
+
+const [wheaterAfterTomorrowData, setWheaterAfterTomorrowData] = useState([]);
+
 const [formInputValues, setFormInputValues] = useState({ place: ''});
+
 const [placePosition, setPlacePosition] = useState({lat: 0, lng: 0});
 
 
@@ -38,7 +51,10 @@ const [placePosition, setPlacePosition] = useState({lat: 0, lng: 0});
       if(data != "") { 
      
         setWheaterCurrentData(data.hourly.data[0]);
-        console.log(data.currently)
+        setWheaterTomorrowData(data.daily.data[1]);
+        setWheaterAfterTomorrowData(data.daily.data[2]);
+
+        console.log('data',data.daily.data[1])
       } else {
         setWheaterCurrentData("error");
       }
@@ -80,10 +96,10 @@ useEffect(() => {
    callAPI();
   }, [placePosition])
 
+/* skycons.add(document.getElementById("icon2"), Skycons.RAIN); */
+
 
   return (
-  console.log(wheaterCurrentData.time),
-  console.log('placeInput', formInputValues.place),
   <>
   <form style={{ display: 'flex', flexDirection: 'column'}}>
     <input
@@ -97,12 +113,26 @@ useEffect(() => {
         {formSubmitSuccess === false && <h3 style={{ color: 'red'}}>Error Occurred, try again later</h3>} */}
     </form>
     <p>{wheaterCurrentData.summary}</p>
+    {console.log('tomorrow', wheaterTomorrowData)}
     <WheaterCard summary = {wheaterCurrentData.summary}
     humidity = {wheaterCurrentData.humidity}
-    temperature = {wheaterCurrentData.temperature} />
+    temperature = {wheaterCurrentData.temperature}
+    icon = {wheaterCurrentData.icon} />
+   <WheaterCard summary = {wheaterTomorrowData.summary}
+    humidity = {wheaterTomorrowData.humidity}
+    temperature = {wheaterTomorrowData.temperatureLow}
+    icon = {wheaterTomorrowData.icon} />
+    <WheaterCard summary = {wheaterAfterTomorrowData.summary}
+    humidity = {wheaterAfterTomorrowData.humidity}
+    temperature = {wheaterAfterTomorrowData.temperatureLow} 
+    icon = {wheaterAfterTomorrowData.icon} />
+    <i icon={wheaterCurrentData.icon}></i>
+    <canvas id="icon2" width="128" height="128"></canvas>
+    <WiDaySunny size={60} color='#000' />
+    {console.log("ikonnnnnnnnnnnna", wheaterCurrentData.icon)}
+
     </>
   );
 };
-
 export default App;
  

@@ -35,6 +35,9 @@
   },
   "dependencies": {
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-animated-weather": "^3.0.0",
+    "react-dom": "^16.10.2",
+    "react-skycons": "^0.7.0",
+    "weather-icons-react": "^1.2.0"
   }
 }
