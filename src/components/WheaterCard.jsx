@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { WiDaySunny, WiHail } from "weather-icons-react";
+import { WiDaySunny, WiDayCloudyHigh, WiCloudy, WiFog, WiSnow, WiDayCloudyGusts, Sleet, WiHail, WiNightClear, WiNightAltPartlyCloudy, WiDayRain } from "weather-icons-react";
 import ReactDOM from 'react-dom';
+import WeatherCardStyle from '../style/WeatherCardStyle.jsx';
+import CardParagraph from '../style/CardParagraph.jsx';
 
 const WheaterCard = props => {
 
@@ -12,8 +14,38 @@ let change = (ikonaaa) => {switch(ikonaaa) {
     case "rain":
       return <WiHail size={60} color='#000' />;
       break;
-    default:
+        case "clear-day":
       return <WiDaySunny size={60} color='#000' />;
+      break;
+          case "clear-night":
+      return <WiNightClear size={60} color='#000' />;
+      break;
+          case "partly-cloudy-night":
+      return <WiNightAltPartlyCloudy size={60} color='#000' />;
+      break;
+          case "partly-cloudy-day":
+      return <WiDayCloudyHigh size={60} color='#000' />;
+      break;
+          case "cloudy":
+      return <WiCloudy size={60} color='#000' />;
+      break;
+          case "rain":
+      return <WiHail size={60} color='#000' />;
+      break;
+          case "sleet":
+      return <WiSleet size={60} color='#000' />;
+      break;
+       case "snow":
+      return <WiSnow size={60} color='#000' />;
+      break;
+       case "wind":
+      return <WiDayCloudyGusts size={60} color='#000' />;
+      break;
+       case "fog":
+      return <WiFog size={60} color='#000' />;
+      break;
+    default:
+      return "Loading...";
       break;
   };}
 
@@ -24,13 +56,15 @@ let change = (ikonaaa) => {switch(ikonaaa) {
 
   return (
     <>
-    <div className="direction">
+    <WeatherCardStyle>
         {change(props.icon)}
-        <p>{props.summary}</p>
-        <p>{props.humidity}</p>
-        <p>{props.temperature}</p>
-      {console.log("ikona",props.humidity)}
-    </div>
+        <CardParagraph primary>Summary:</CardParagraph>
+        <CardParagraph>{props.summary}</CardParagraph>
+        <CardParagraph primart>Humidity:</CardParagraph>
+        <CardParagraph>{props.humidity}</CardParagraph>
+        <CardParagraph primary>Temperature:</CardParagraph>
+        <CardParagraph>{props.temperature}</CardParagraph>
+    </WeatherCardStyle>
     </>
   );
 };
