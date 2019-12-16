@@ -5,11 +5,12 @@ export default styled.h1`
 display: flex;
 flex-direction: column;
 align-items: center;
-align-content:center;
-justify-content: center;
+align-content:space-between;
+justify-content: space-between;
 text-align: center;
 width : 10rem;
 border-radius: 1rem;
+
 background-color: white;
 opacity: 0.8;
 margin: 1rem;

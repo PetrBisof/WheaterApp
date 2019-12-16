@@ -3,9 +3,14 @@ import styled from 'styled-components';
 
 
 export default styled.div`
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  background-image: url(${"/img/sun.jpg"});
+  font-size:0.6rem;
+  align-items: center;
+  background-image: ${props => `url(${props.imgUrl})`};
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 `;
+

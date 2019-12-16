@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { WiDaySunny } from "weather-icons-react";
 import Title from '../style/Title.jsx';
-import All from '../style/All.jsx';
 import Content from '../style/Content.jsx';
+import All from '../style/All.jsx';
 
 import styled from 'styled-components';
 
@@ -15,6 +15,10 @@ import ReactAnimatedWeather from 'react-animated-weather';
 import WeatherCardContainer  from '../style/WeatherCardContainer.jsx';
 import Form  from '../style/Form.jsx';
 import Input  from '../style/Input.jsx';
+import Body  from '../style/Body.jsx';
+import FiveHoursSignFrame from '../style/FiveHoursSignFrame.jsx';
+import FiveHoursSign from '../style/FiveHoursSign.jsx';
+import FiveHoursContainer from '../style/FiveHoursContainer.jsx';
 /* import './../weather-icons.css'; */
 
 /* import Skycons from 'react-skycons' */
@@ -31,11 +35,21 @@ const [wheaterAfterTomorrowData, setWheaterAfterTomorrowData] = useState([]);
 
 const [dailyData, setDailyData] = useState([]);
 
-const [formInputValues, setFormInputValues] = useState({ place: ''});
+const [formInputValues, setFormInputValues] = useState({ place: 'Prague'});
 
-const [placePosition, setPlacePosition] = useState({lat: 0, lng: 0});
+const [placeInfo, setPlaceInfo] = useState([]);
+
+const [placeInfoSummary, setPlaceInfoSummary] = useState([]);
+
+const [placePosition, setPlacePosition] = useState({lat: 50.08804, lng: 14.42076});
+
+const [placeName, setPlaceName] = useState('Prague');
+
+const [placeMap, setPlaceMap] = useState('https://www.openstreetmap.org/?mlat=50.08747&mlon=14.42125#map=16/50.08747/14.42125');
 
 const [oneHour, setOneHour] = useState();
+
+const pictures = ["/img/sunNew.jpg", "/img/sunNew.jpg"];
 
 
  const handleInputChange = e => {
@@ -93,15 +107,19 @@ const [oneHour, setOneHour] = useState();
     .then(data => {
       
       if(data != "" && data.total_results != 0) { 
-        console.log(data.results[0].geometry)
+        console.log("map Url", data.results[0].annotations.OSM.url);
           setPlacePosition(data.results[0].geometry);
+          setPlaceName(formInputValues.place);
+          setPlaceMap(data.results[0].annotations.OSM.url);
+/*           setPlaceName(placeInfo => [...placeInfo, data.results[0].geometry]);
+          setPlaceInfo(placeInfo => [...placeInfo, data.results[0].annotations]); */
 /*         console.log(data.results[0].geometry) */
       } else if (data.total_results == 0) {
           setPlacePosition("error unknown place");
       }
         else {
           setPlacePosition("error");
-      }
+      }     
     
     })
   };
@@ -126,6 +144,7 @@ const setHours = () => {
     setOneHour('There has occured an error. You have probably incorrectly written name of the place. Please try again (in English).')}
 }
 
+
 useEffect(() => {
    callAPI();
   }, [])
@@ -138,15 +157,10 @@ useEffect(() => {
   setHours();
 }, [dailyData])
 
-
-
-
-
-
-
   return (
   <>
-  <All>
+{/*   <Body> */}
+  <All imgUrl = "/img/sunNew.jpg">
   <Content>
   <Title>Weather App</Title>
 
@@ -154,6 +168,7 @@ useEffect(() => {
     <Input
       id="place"
       type="text"
+      placeholder="Insert name of place (in English)."
       value={formInputValues.place}
       onChange={handleInputChange}
     />
@@ -164,24 +179,40 @@ useEffect(() => {
 
     {console.log('tomorrow', wheaterTomorrowData)}
     <WeatherCardContainer>{console.log(placePosition)}
-    <WheaterCard summary = {wheaterCurrentData.summary}
-    humidity = {wheaterCurrentData.humidity}
-    temperature = {Math.round(wheaterCurrentData.temperature*10)/10} 
-    icon = {wheaterCurrentData.icon} />
+      <WheaterCard headline = "Current"
+          summary = {wheaterCurrentData.summary}
+          humidity = {wheaterCurrentData.humidity}
+          temperature = {Math.round(wheaterCurrentData.temperature*10)/10} 
+          icon = {wheaterCurrentData.icon} />
 
-   <WheaterCard summary = {wheaterTomorrowData.summary}
-    humidity = {wheaterTomorrowData.humidity}
-    temperature = {wheaterTomorrowData.temperatureLow}
-    icon = {wheaterTomorrowData.icon} />
+      <WheaterCard headline = "Tomorrow"
+        summary = {wheaterTomorrowData.summary}
+          humidity = {wheaterTomorrowData.humidity}
+          temperature = {wheaterTomorrowData.temperatureLow}
+          icon = {wheaterTomorrowData.icon} />
 
-    <WheaterCard summary = {wheaterAfterTomorrowData.summary}
-    humidity = {wheaterAfterTomorrowData.humidity}
-    temperature = {wheaterAfterTomorrowData.temperatureLow} 
-    icon = {wheaterAfterTomorrowData.icon} />
-    </ WeatherCardContainer> 
+      <WheaterCard headline = "Day After Tomorrow"
+          summary = {wheaterAfterTomorrowData.summary}
+          humidity = {wheaterAfterTomorrowData.humidity}
+          temperature = {wheaterAfterTomorrowData.temperatureLow} 
+          icon = {wheaterAfterTomorrowData.icon} />
+    </ WeatherCardContainer>
+    <FiveHoursSignFrame>
+    <FiveHoursSign>Weather next five hours</FiveHoursSign>
+    </ FiveHoursSignFrame>
+    <FiveHoursContainer> 
     {oneHour}
+    </ FiveHoursContainer>
+      <FiveHoursSignFrame>
+    <FiveHoursSign>Showing weather in city {placeName}</FiveHoursSign>
+    <FiveHoursSign><a href = {placeMap} target = "_blank">Go to map</a></FiveHoursSign>
+    </ FiveHoursSignFrame>
     </ Content>
     </All>
+    {/* </ Body> -- I tried to get of body margin, but that wasn't working with Styled Componenets, I have done it in html file in the end */}
+
+
+
     </>
   );
 
