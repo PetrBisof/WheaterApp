@@ -1,7 +1,7 @@
 import React from "react";
 import styled from 'styled-components';
 
-export default styled.h1`
+export default styled.div`
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -9,6 +9,8 @@ align-content:space-between;
 justify-content: space-between;
 text-align: center;
 width : 10rem;
+min-height:${props => props.primary ? "0rem" : "27rem"};
+
 border-radius: 1rem;
 
 background-color: white;

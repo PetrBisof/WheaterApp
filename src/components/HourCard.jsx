@@ -9,7 +9,7 @@ const HourCard = props => {
 
   return (
     <>
-    <WeatherCardStyle>
+    <WeatherCardStyle primary>
         <CardFiveHoursParagraph primary>Temperature</CardFiveHoursParagraph>
         <CardFiveHoursParagraph>{props.temperature}</CardFiveHoursParagraph>
         <CardFiveHoursParagraph primary>Humidity</CardFiveHoursParagraph>

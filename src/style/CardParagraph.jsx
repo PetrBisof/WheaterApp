@@ -5,7 +5,7 @@ export default styled.p`
  @import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
 margin: 0;
 padding-bottom: 0.5rem;
-font-size: ${props => props.primary ? "1rem" : "1.2rem"};
+font-size: ${props => props.primary ? "1.3rem" : "1.5rem"};
 font-family: 'Lobster';
 font-weight: ${props => props.primary ? "bold" : "lighter"};
 `;

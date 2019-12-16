@@ -10,6 +10,8 @@ import styled from 'styled-components';
 
 /* import reactstrap from 'reactstrap'; */
 import WheaterCard from './WheaterCard.jsx';
+import WheaterDayAfterTomorrowCard from './WheaterDayAfterTomorrowCard.jsx';
+import WheaterTomorrowCard from './WheaterTomorrowCard.jsx';
 import HourCard from './HourCard.jsx';
 import ReactAnimatedWeather from 'react-animated-weather';
 import WeatherCardContainer  from '../style/WeatherCardContainer.jsx';
@@ -19,6 +21,9 @@ import Body  from '../style/Body.jsx';
 import FiveHoursSignFrame from '../style/FiveHoursSignFrame.jsx';
 import FiveHoursSign from '../style/FiveHoursSign.jsx';
 import FiveHoursContainer from '../style/FiveHoursContainer.jsx';
+
+
+WheaterDayAfterTomorrowCard
 /* import './../weather-icons.css'; */
 
 /* import Skycons from 'react-skycons' */
@@ -49,15 +54,24 @@ const [placeMap, setPlaceMap] = useState('https://www.openstreetmap.org/?mlat=50
 
 const [oneHour, setOneHour] = useState();
 
-const pictures = ["/img/sunNew.jpg", "/img/sunNew.jpg"];
+const [background, setBackground] = useState("/img/garden.jpg");
+
+const pictures = ["/img/sunNew.jpg", "/img/house.jpg", "/img/sun.jpg", "/img/field.jpg", "/img/garden.jpg", "/img/cityRain.jpg", /* "/img/tent.jpg" */, "/img/night.jpg"];
+
+const randomNumber = () => Math.floor(Math.random() * 7);
 
 
- const handleInputChange = e => {
+const handleInputChange = e => {
   setFormInputValues({
     ...formInputValues,
     [e.target.id]: e.target.value
   })
 };
+
+const round = (number) => {
+  return (Math.round(number*10)/10 + " °C")
+} 
+
 
 
   const callAPI = () => {
@@ -92,7 +106,7 @@ const pictures = ["/img/sunNew.jpg", "/img/sunNew.jpg"];
   }
 
   const getPosition = (e) =>  {
-    e.preventDefault()
+    e.preventDefault();
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const URL = "https://api.opencagedata.com/geocode/v1/json?q=" + formInputValues.place + "&key=ba6d8a3e67ba47f1b2be3a247eb42d69 ";
       fetch(proxyUrl + URL, {
@@ -111,6 +125,7 @@ const pictures = ["/img/sunNew.jpg", "/img/sunNew.jpg"];
           setPlacePosition(data.results[0].geometry);
           setPlaceName(formInputValues.place);
           setPlaceMap(data.results[0].annotations.OSM.url);
+          setBackground(pictures[randomNumber()]);
 /*           setPlaceName(placeInfo => [...placeInfo, data.results[0].geometry]);
           setPlaceInfo(placeInfo => [...placeInfo, data.results[0].annotations]); */
 /*         console.log(data.results[0].geometry) */
@@ -131,8 +146,8 @@ const setHours = () => {
     return  ( 
          <HourCard 
           key= {index}
-          humidity = {hour.humidity}
-          temperature = {hour.temperature}
+          humidity = {hour.humidity + " %"}
+          temperature = {round(hour.temperature)}
          />
       )}
       }
@@ -160,7 +175,7 @@ useEffect(() => {
   return (
   <>
 {/*   <Body> */}
-  <All imgUrl = "/img/sunNew.jpg">
+  <All imgUrl = /* "/img/sunNew.jpg" */ {background}>
   <Content>
   <Title>Weather App</Title>
 
@@ -181,20 +196,22 @@ useEffect(() => {
     <WeatherCardContainer>{console.log(placePosition)}
       <WheaterCard headline = "Current"
           summary = {wheaterCurrentData.summary}
-          humidity = {wheaterCurrentData.humidity}
-          temperature = {Math.round(wheaterCurrentData.temperature*10)/10} 
+          humidity = {wheaterCurrentData.humidity + " %"}
+          temperature = {round(wheaterCurrentData.temperature)} 
           icon = {wheaterCurrentData.icon} />
 
-      <WheaterCard headline = "Tomorrow"
+      <WheaterTomorrowCard headline = "Tomorrow"
         summary = {wheaterTomorrowData.summary}
-          humidity = {wheaterTomorrowData.humidity}
-          temperature = {wheaterTomorrowData.temperatureLow}
+          humidity = {wheaterTomorrowData.humidity + " %"}
+          temperatureLow = {round(wheaterTomorrowData.temperatureLow)}
+          temperatureHigh = {round(wheaterTomorrowData.temperatureHigh)}
           icon = {wheaterTomorrowData.icon} />
 
-      <WheaterCard headline = "Day After Tomorrow"
+      <WheaterDayAfterTomorrowCard headline = "Day After Tomorrow"          
           summary = {wheaterAfterTomorrowData.summary}
-          humidity = {wheaterAfterTomorrowData.humidity}
-          temperature = {wheaterAfterTomorrowData.temperatureLow} 
+          humidity = {wheaterAfterTomorrowData.humidity + " %"}
+          temperatureHigh = {round(wheaterAfterTomorrowData.temperatureHigh)}
+          temperatureLow = {round(wheaterAfterTomorrowData.temperatureLow)} 
           icon = {wheaterAfterTomorrowData.icon} />
     </ WeatherCardContainer>
     <FiveHoursSignFrame>

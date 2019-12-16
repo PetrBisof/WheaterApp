@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import WeatherCardStyle from '../style/WeatherCardStyle.jsx';
 import CardParagraph from '../style/CardParagraph.jsx';
 import CardHeadline from '../style/CardHeadline.jsx';
+import Icon from '../style/Icon.jsx';
 
 const WheaterCard = props => {
 
@@ -59,10 +60,10 @@ let change = (ikonaaa) => {switch(ikonaaa) {
     <>
     <WeatherCardStyle>
         <CardHeadline>{props.headline}</CardHeadline>
-        {change(props.icon)}
+        <Icon primary>{change(props.icon)}</Icon>
         <CardParagraph primary>Summary:</CardParagraph>
         <CardParagraph>{props.summary}</CardParagraph>
-        <CardParagraph primart>Humidity:</CardParagraph>
+        <CardParagraph primary>Humidity:</CardParagraph>
         <CardParagraph>{props.humidity}</CardParagraph>
         <CardParagraph primary>Temperature:</CardParagraph>
         <CardParagraph>{props.temperature}</CardParagraph>
