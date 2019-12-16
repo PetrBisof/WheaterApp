@@ -3,32 +3,22 @@ import ReactDOM from 'react-dom';
 import { WiDaySunny } from "weather-icons-react";
 import Title from '../style/Title.jsx';
 import Content from '../style/Content.jsx';
-import All from '../style/All.jsx';
-
-import styled from 'styled-components';
-
-
-/* import reactstrap from 'reactstrap'; */
 import WheaterCard from './WheaterCard.jsx';
+import styled from 'styled-components';
 import WheaterDayAfterTomorrowCard from './WheaterDayAfterTomorrowCard.jsx';
 import WheaterTomorrowCard from './WheaterTomorrowCard.jsx';
 import HourCard from './HourCard.jsx';
-import ReactAnimatedWeather from 'react-animated-weather';
+
+//style import
+import All from '../style/All.jsx';
 import WeatherCardContainer  from '../style/WeatherCardContainer.jsx';
 import Form  from '../style/Form.jsx';
 import Input  from '../style/Input.jsx';
 import Body  from '../style/Body.jsx';
+import Button  from '../style/Button.jsx';
 import FiveHoursSignFrame from '../style/FiveHoursSignFrame.jsx';
 import FiveHoursSign from '../style/FiveHoursSign.jsx';
 import FiveHoursContainer from '../style/FiveHoursContainer.jsx';
-
-
-WheaterDayAfterTomorrowCard
-/* import './../weather-icons.css'; */
-
-/* import Skycons from 'react-skycons' */
-
-
 
 const App = props => {
 
@@ -42,10 +32,6 @@ const [dailyData, setDailyData] = useState([]);
 
 const [formInputValues, setFormInputValues] = useState({ place: 'Prague'});
 
-const [placeInfo, setPlaceInfo] = useState([]);
-
-const [placeInfoSummary, setPlaceInfoSummary] = useState([]);
-
 const [placePosition, setPlacePosition] = useState({lat: 50.08804, lng: 14.42076});
 
 const [placeName, setPlaceName] = useState('Prague');
@@ -54,12 +40,18 @@ const [placeMap, setPlaceMap] = useState('https://www.openstreetmap.org/?mlat=50
 
 const [oneHour, setOneHour] = useState();
 
-const [background, setBackground] = useState("/img/garden.jpg");
+const [background, setBackground] = useState("/img/night.jpg");
 
-const pictures = ["/img/sunNew.jpg", "/img/house.jpg", "/img/sun.jpg", "/img/field.jpg", "/img/garden.jpg", "/img/cityRain.jpg", /* "/img/tent.jpg" */, "/img/night.jpg"];
+//Array for choosing background
+const pictures = ["/img/sunNew.jpg", "/img/house.jpg", "/img/sun.jpg", "/img/field.jpg", "/img/garden.jpg", "/img/cityRain.jpg", "/img/night.jpg"];
 
+//function for creating random number, which will be index of background image from pictures array
 const randomNumber = () => Math.floor(Math.random() * 7);
 
+//function for round up Celsius number
+const round = (number) => {
+  return (Math.round(number*10)/10 + " °C")
+} 
 
 const handleInputChange = e => {
   setFormInputValues({
@@ -68,12 +60,7 @@ const handleInputChange = e => {
   })
 };
 
-const round = (number) => {
-  return (Math.round(number*10)/10 + " °C")
-} 
-
-
-
+// based on entered place get information about weather from darkskt.net
   const callAPI = () => {
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const URL =     "https://api.darksky.net/forecast/c9271eef8cb7f51c8d4b1bf066d4e9cd/" + placePosition.lat + "," + placePosition.lng + "?units=si";
@@ -105,6 +92,7 @@ const round = (number) => {
     })
   }
 
+//get longitude and latitude of place, which was entered by user
   const getPosition = (e) =>  {
     e.preventDefault();
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -125,6 +113,7 @@ const round = (number) => {
           setPlacePosition(data.results[0].geometry);
           setPlaceName(formInputValues.place);
           setPlaceMap(data.results[0].annotations.OSM.url);
+          //creates new backgroundimage - when it is inside this function, it is called only when user clicks on Submit, that's what I wanted, otherwise background image was changed when user entered new character into Input
           setBackground(pictures[randomNumber()]);
 /*           setPlaceName(placeInfo => [...placeInfo, data.results[0].geometry]);
           setPlaceInfo(placeInfo => [...placeInfo, data.results[0].annotations]); */
@@ -139,6 +128,7 @@ const round = (number) => {
     })
   };
 
+// map dailyData and create five HourCards components
 const setHours = () => {
    if(dailyData != "" && dailyData != "error") {
     setOneHour(dailyData.map((hour, index) => {
@@ -153,32 +143,33 @@ const setHours = () => {
       }
     ))
     }
-
     else if (dailyData == 'error'){
-
-    setOneHour('There has occured an error. You have probably incorrectly written name of the place. Please try again (in English).')}
+    setOneHour('error')}
 }
 
-
+//call API when site is loaded
 useEffect(() => {
    callAPI();
   }, [])
 
+//call API when user enters new position and there are new placePosition data
 useEffect(() => {
    callAPI();
   }, [placePosition])
 
+//call setHours() for creating new HourCards components when dailyData has been changed
 useEffect(() => {
   setHours();
 }, [dailyData])
 
-  return (
+
+//render error message when there are no valid placePosition data
+if (placePosition == "error unknown place" || placePosition == "error"){
+   return (
   <>
-{/*   <Body> */}
-  <All imgUrl = /* "/img/sunNew.jpg" */ {background}>
+  <All imgUrl = {background}>
   <Content>
   <Title>Weather App</Title>
-
   <Form>
     <Input
       id="place"
@@ -188,50 +179,72 @@ useEffect(() => {
       onChange={handleInputChange}
     />
     <button onClick={getPosition} style={{border: '1px solid blue', margin: '5px'}}>Submit</button>
-{/*         {formSubmitSuccess === true && <h3>Congrats!</h3>}
-        {formSubmitSuccess === false && <h3 style={{ color: 'red'}}>Error Occurred, try again later</h3>} */}
   </Form>
+  </Content>
+  </All>
+  </>
+  )
+}
 
-    {console.log('tomorrow', wheaterTomorrowData)}
-    <WeatherCardContainer>{console.log(placePosition)}
-      <WheaterCard headline = "Current"
-          summary = {wheaterCurrentData.summary}
-          humidity = {wheaterCurrentData.humidity + " %"}
-          temperature = {round(wheaterCurrentData.temperature)} 
-          icon = {wheaterCurrentData.icon} />
+else {
+  return (
+  <>
+  {/* <Body> -- I tried to get of body margin, but that wasn't working with Styled Componenets, I have done it in html file in the end */}
+  <All imgUrl = {background}>
+    <Content>
+      <Title>Weather App</Title>
 
-      <WheaterTomorrowCard headline = "Tomorrow"
-        summary = {wheaterTomorrowData.summary}
-          humidity = {wheaterTomorrowData.humidity + " %"}
-          temperatureLow = {round(wheaterTomorrowData.temperatureLow)}
-          temperatureHigh = {round(wheaterTomorrowData.temperatureHigh)}
-          icon = {wheaterTomorrowData.icon} />
+      <Form>
+        <Input
+          id="place"
+          type="text"
+          placeholder="Insert name of place (in English)."
+          value={formInputValues.place}
+          onChange={handleInputChange}
+        />
+        <Button onClick={getPosition}>Submit</Button>
+      </Form>
 
-      <WheaterDayAfterTomorrowCard headline = "Day After Tomorrow"          
-          summary = {wheaterAfterTomorrowData.summary}
-          humidity = {wheaterAfterTomorrowData.humidity + " %"}
-          temperatureHigh = {round(wheaterAfterTomorrowData.temperatureHigh)}
-          temperatureLow = {round(wheaterAfterTomorrowData.temperatureLow)} 
-          icon = {wheaterAfterTomorrowData.icon} />
-    </ WeatherCardContainer>
-    <FiveHoursSignFrame>
-    <FiveHoursSign>Weather next five hours</FiveHoursSign>
-    </ FiveHoursSignFrame>
-    <FiveHoursContainer> 
-    {oneHour}
-    </ FiveHoursContainer>
-      <FiveHoursSignFrame>
-    <FiveHoursSign>Showing weather in city {placeName}</FiveHoursSign>
-    <FiveHoursSign><a href = {placeMap} target = "_blank">Go to map</a></FiveHoursSign>
-    </ FiveHoursSignFrame>
-    </ Content>
+        <WeatherCardContainer>{console.log(placePosition)}
+          <WheaterCard headline = "Current"
+              summary = {wheaterCurrentData.summary}
+              humidity = {wheaterCurrentData.humidity + " %"}
+              temperature = {round(wheaterCurrentData.temperature)} 
+              icon = {wheaterCurrentData.icon} />
+
+          <WheaterTomorrowCard headline = "Tomorrow"
+            summary = {wheaterTomorrowData.summary}
+              humidity = {wheaterTomorrowData.humidity + " %"}
+              temperatureLow = {round(wheaterTomorrowData.temperatureLow)}
+              temperatureHigh = {round(wheaterTomorrowData.temperatureHigh)}
+              icon = {wheaterTomorrowData.icon} />
+
+          <WheaterDayAfterTomorrowCard headline = "Day After Tomorrow"          
+              summary = {wheaterAfterTomorrowData.summary}
+              humidity = {wheaterAfterTomorrowData.humidity + " %"}
+              temperatureHigh = {round(wheaterAfterTomorrowData.temperatureHigh)}
+              temperatureLow = {round(wheaterAfterTomorrowData.temperatureLow)} 
+              icon = {wheaterAfterTomorrowData.icon} />
+        </ WeatherCardContainer>
+
+        <FiveHoursSignFrame>
+          <FiveHoursSign>Weather next five hours</FiveHoursSign>
+        </ FiveHoursSignFrame>
+
+        <FiveHoursContainer> 
+         {oneHour}
+        </ FiveHoursContainer>
+         
+        <FiveHoursSignFrame>
+          <FiveHoursSign>Showing weather in city {placeName}</FiveHoursSign>
+          <FiveHoursSign><a href = {placeMap} target = "_blank">Go to map</a></FiveHoursSign>
+        </ FiveHoursSignFrame>
+      </ Content>
     </All>
     {/* </ Body> -- I tried to get of body margin, but that wasn't working with Styled Componenets, I have done it in html file in the end */}
-
-
-
     </>
-  );
+    )
+  ;}
 
   
 }

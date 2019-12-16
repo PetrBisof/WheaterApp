@@ -7,4 +7,9 @@ export default styled.div`
   display: flex;
   flex-direction: column;
 
+@media only screen and (max-width: 600px) {
+  /* For everything bigger than 768px */
+  width: auto;
+  justify-content: center;
+  align-items: center;
 `;
