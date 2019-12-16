@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { WiDaySunny } from "weather-icons-react";
 import Title from '../style/Title.jsx';
 import Content from '../style/Content.jsx';
-import WheaterCard from './WheaterCard.jsx';
+import WeatherCard from './WeatherCard.jsx';
 import styled from 'styled-components';
-import WheaterDayAfterTomorrowCard from './WheaterDayAfterTomorrowCard.jsx';
-import WheaterTomorrowCard from './WheaterTomorrowCard.jsx';
+import WeatherDayAfterTomorrowCard from './WeatherDayAfterTomorrowCard.jsx';
+import WeatherTomorrowCard from './WeatherTomorrowCard.jsx';
 import HourCard from './HourCard.jsx';
 
 //style import
@@ -19,14 +19,16 @@ import Button  from '../style/Button.jsx';
 import FiveHoursSignFrame from '../style/FiveHoursSignFrame.jsx';
 import FiveHoursSign from '../style/FiveHoursSign.jsx';
 import FiveHoursContainer from '../style/FiveHoursContainer.jsx';
+import Warning from '../style/Warning.jsx';
+import Label from '../style/Label.jsx';
 
 const App = props => {
 
-const [wheaterCurrentData, setWheaterCurrentData] = useState([]);
+const [weatherCurrentData, setWeatherCurrentData] = useState([]);
 
-const [wheaterTomorrowData, setWheaterTomorrowData] = useState([]);
+const [weatherTomorrowData, setWeatherTomorrowData] = useState([]);
 
-const [wheaterAfterTomorrowData, setWheaterAfterTomorrowData] = useState([]);
+const [weatherAfterTomorrowData, setWeatherAfterTomorrowData] = useState([]);
 
 const [dailyData, setDailyData] = useState([]);
 
@@ -40,13 +42,13 @@ const [placeMap, setPlaceMap] = useState('https://www.openstreetmap.org/?mlat=50
 
 const [oneHour, setOneHour] = useState();
 
-const [background, setBackground] = useState("/img/night.jpg");
+const [background, setBackground] = useState("/img/winter.jpg");
 
 //Array for choosing background
-const pictures = ["/img/sunNew.jpg", "/img/house.jpg", "/img/sun.jpg", "/img/field.jpg", "/img/garden.jpg", "/img/cityRain.jpg", "/img/night.jpg"];
+const pictures = ["/img/sunNew.jpg", "/img/house.jpg", "/img/sun.jpg", "/img/field.jpg", "/img/garden.jpg", "/img/cityRain.jpg", "/img/night.jpg", "/img/winter.jpg","/img/clearNight.jpg", "/img/winterCity.jpg"];
 
 //function for creating random number, which will be index of background image from pictures array
-const randomNumber = () => Math.floor(Math.random() * 7);
+const randomNumber = () => Math.floor(Math.random() * 10);
 
 //function for round up Celsius number
 const round = (number) => {
@@ -64,7 +66,6 @@ const handleInputChange = e => {
   const callAPI = () => {
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const URL =     "https://api.darksky.net/forecast/c9271eef8cb7f51c8d4b1bf066d4e9cd/" + placePosition.lat + "," + placePosition.lng + "?units=si";
-    console.log("place", placePosition.lat);
     fetch(proxyUrl + URL, {
       method: 'GET',
       headers: {
@@ -78,14 +79,14 @@ const handleInputChange = e => {
       
       if(data != "" && typeof placePosition != 'string') { 
      
-        setWheaterCurrentData(data.currently/* hourly.data[0] */);
-        setWheaterTomorrowData(data.daily.data[1]);
-        setWheaterAfterTomorrowData(data.daily.data[2]);
+        setWeatherCurrentData(data.currently/* hourly.data[0] */);
+        setWeatherTomorrowData(data.daily.data[1]);
+        setWeatherAfterTomorrowData(data.daily.data[2]);
         setDailyData(data.hourly.data);
       } else {
-        setWheaterCurrentData("error");
-        setWheaterTomorrowData("error");
-        setWheaterAfterTomorrowData("error");
+        setWeatherCurrentData("error");
+        setWeatherTomorrowData("error");
+        setWeatherAfterTomorrowData("error");
         setDailyData("error");
       }
     
@@ -109,7 +110,6 @@ const handleInputChange = e => {
     .then(data => {
       
       if(data != "" && data.total_results != 0) { 
-        console.log("map Url", data.results[0].annotations.OSM.url);
           setPlacePosition(data.results[0].geometry);
           setPlaceName(formInputValues.place);
           setPlaceMap(data.results[0].annotations.OSM.url);
@@ -171,14 +171,17 @@ if (placePosition == "error unknown place" || placePosition == "error"){
   <Content>
   <Title>Weather App</Title>
   <Form>
+    <Label htmlFor="place">Please insert name on city below and click on Submit</Label>
     <Input
       id="place"
       type="text"
       placeholder="Insert name of place (in English)."
+      
       value={formInputValues.place}
       onChange={handleInputChange}
     />
-    <button onClick={getPosition} style={{border: '1px solid blue', margin: '5px'}}>Submit</button>
+    <Button onClick={getPosition} style={{border: '1px solid blue', margin: '5px'}}>Submit</Button>
+    <Warning>An error has occured. Probably you have incorrectly entered name of the city. Please try again.</Warning>
   </Form>
   </Content>
   </All>
@@ -195,6 +198,7 @@ else {
       <Title>Weather App</Title>
 
       <Form>
+        <Label htmlFor="place">Please insert name on city below and click on Submit</Label>
         <Input
           id="place"
           type="text"
@@ -205,26 +209,26 @@ else {
         <Button onClick={getPosition}>Submit</Button>
       </Form>
 
-        <WeatherCardContainer>{console.log(placePosition)}
-          <WheaterCard headline = "Current"
-              summary = {wheaterCurrentData.summary}
-              humidity = {wheaterCurrentData.humidity + " %"}
-              temperature = {round(wheaterCurrentData.temperature)} 
-              icon = {wheaterCurrentData.icon} />
+        <WeatherCardContainer>
+          <WeatherCard headline = "Current"
+              summary = {weatherCurrentData.summary}
+              humidity = {weatherCurrentData.humidity + " %"}
+              temperature = {round(weatherCurrentData.temperature)} 
+              icon = {weatherCurrentData.icon} />
 
-          <WheaterTomorrowCard headline = "Tomorrow"
-            summary = {wheaterTomorrowData.summary}
-              humidity = {wheaterTomorrowData.humidity + " %"}
-              temperatureLow = {round(wheaterTomorrowData.temperatureLow)}
-              temperatureHigh = {round(wheaterTomorrowData.temperatureHigh)}
-              icon = {wheaterTomorrowData.icon} />
+          <WeatherTomorrowCard headline = "Tomorrow"
+            summary = {weatherTomorrowData.summary}
+              humidity = {weatherTomorrowData.humidity + " %"}
+              temperatureLow = {round(weatherTomorrowData.temperatureLow)}
+              temperatureHigh = {round(weatherTomorrowData.temperatureHigh)}
+              icon = {weatherTomorrowData.icon} />
 
-          <WheaterDayAfterTomorrowCard headline = "Day After Tomorrow"          
-              summary = {wheaterAfterTomorrowData.summary}
-              humidity = {wheaterAfterTomorrowData.humidity + " %"}
-              temperatureHigh = {round(wheaterAfterTomorrowData.temperatureHigh)}
-              temperatureLow = {round(wheaterAfterTomorrowData.temperatureLow)} 
-              icon = {wheaterAfterTomorrowData.icon} />
+          <WeatherDayAfterTomorrowCard headline = "Day After Tomorrow"          
+              summary = {weatherAfterTomorrowData.summary}
+              humidity = {weatherAfterTomorrowData.humidity + " %"}
+              temperatureHigh = {round(weatherAfterTomorrowData.temperatureHigh)}
+              temperatureLow = {round(weatherAfterTomorrowData.temperatureLow)} 
+              icon = {weatherAfterTomorrowData.icon} />
         </ WeatherCardContainer>
 
         <FiveHoursSignFrame>
@@ -245,8 +249,6 @@ else {
     </>
     )
   ;}
-
-  
 }
 export default App;
  

@@ -6,7 +6,9 @@ export default styled.input`
   border-radius: 5px;
   background-color: white;
   font-family: 'Lobster';
+  color: darkred;
+  text-align: center;
+  font-size: 1rem;
   opacity: 0.8;
-
 `;
 

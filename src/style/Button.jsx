@@ -6,9 +6,8 @@ export default styled.button`
   border-radius: 5px;
   background-color: white;
   font-family: 'Lobster';
-  border: '1px solid blue';
-   margin: '5px';
+  border: '1px solid grey';
+    margin: '5px';
   opacity: 0.8;
-
 `;
 
